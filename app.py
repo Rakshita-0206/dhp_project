@@ -46,7 +46,7 @@ def preprocess_csv():
     df_exploded['year_month'] = df_exploded['timestamp'].dt.to_period('Y').astype(str)
 
     lang_counts = df_exploded.groupby(['year_month', 'tags']).size().reset_index(name='count')
-    top_languages = lang_counts.groupby('tags')['count'].sum().nlargest(30).index
+    top_languages = lang_counts.groupby('tags')['count'].sum().nlargest(10).index
     df_top = lang_counts[lang_counts['tags'].isin(top_languages)]
     pivot_df = df_top.pivot(index='year_month', columns='tags', values='count').fillna(0)
     row_totals = pivot_df.sum(axis=1)
