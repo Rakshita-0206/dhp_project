@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Language Trend Visualizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        canvas { max-width: 100%; }
+    </style>
+</head>
+<body>
+
+<h2>Top 30 Programming Language Trends (Last 10 Years)</h2>
+
+<label for="languageSelect">Select Language(s):</label><br>
+<select id="languageSelect" multiple size="10" style="width: 300px;"></select>
+
+<canvas id="trendChart" height="100"></canvas>  
+
+<script>
+    let chartInstance;
+
+    async function fetchLanguages() {
+        const res = await fetch('http://127.0.0.1:5000/api/languages');
+        const languages = await res.json();
+        const select = document.getElementById('languageSelect');
+
+        languages.forEach(lang => {
+            const opt = document.createElement('option');
+            opt.value = lang;
+            opt.textContent = lang;
+            select.appendChild(opt);
+        });
+
+        // Select first 5 by default
+        for (let i = 0; i < 5; i++) {
+            if (select.options[i]) select.options[i].selected = true;
+        }
+
+        drawChart();
+    }
+
+    async function drawChart() {
+        const response = await fetch('http://127.0.0.1:5000/api/data');
+        const data = await response.json();
+
+        const selectedLangs = Array.from(document.getElementById('languageSelect').selectedOptions)
+                                   .map(opt => opt.value);
+
+        const labels = Object.keys(data);
+        const datasets = selectedLangs.map((lang, i) => {
+            return {
+                label: lang,
+                data: labels.map(date => data[date][lang] || 0),
+                borderColor: getColor(i),
+                fill: false
+            };
+        });
+
+        if (chartInstance) chartInstance.destroy();
+
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: { labels: labels, datasets: datasets },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                stacked: false,
+                plugins: {
+                    title: { display: true, text: 'Language Trends (Questions per Month)' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Years' }},
+                    y: { title: { display: true, text: 'Percentage of Questions' }}
+                }
+            }
+        });
+    }
+
+    function getColor(index) {
+        const colors = [
+            'red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'cyan', 'lime', 'navy',
+            'teal', 'gold', 'magenta', 'gray', 'black', 'coral', 'indigo'
+        ];
+        return colors[index % colors.length];
+    }
+
+    document.getElementById('languageSelect').addEventListener('change', drawChart);
+    fetchLanguages();
+</script>
+
+</body>
+</html>
