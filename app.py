@@ -57,4 +57,5 @@ def preprocess_csv():
 
 if __name__ == '__main__':
     preprocess_csv()  # Ensure data is ready
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Use Render's provided port
+    app.run(host='0.0.0.0', port=port)
