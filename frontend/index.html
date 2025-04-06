@@ -3,19 +3,357 @@
 <head>
     <title>Language Trend Visualizer</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        canvas { max-width: 100%; }
+        /* Modern Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: linear-gradient(135deg, #a8c0ff 0%, #c4e0e5 50%, #b0dcf7 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+            animation: gradientAnimation 15s ease infinite;
+            background-size: 400% 400%;
+        }
+        
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 0 30px rgba(10, 37, 64, 0.08) inset;
+            padding: 40px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #64b3f4, #c2e9fb, #64b3f4);
+            background-size: 300% 100%;
+            animation: gradientBorder 4s ease infinite;
+        }
+        
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        /* Header Styling */
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            position: relative;
+        }
+        
+        .header:after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, #64b3f4, #c2e9fb);
+        }
+        
+        h2 {
+            color: #1a365d;
+            font-weight: 700;
+            font-size: 26px;
+            margin-left: 18px;
+            flex-grow: 1;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.05);
+            letter-spacing: 0.3px;
+        }
+        
+        .header-icon {
+            color: #3182ce;
+            font-size: 22px;
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .header-icon:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to right, #f8fafc, #e1f5fe);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.03), 0 3px 5px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+        
+        .control-panel:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.04);
+        }
+        
+        .control-header {
+            font-size: 17px;
+            font-weight: 600;
+            color: #2c5282;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .control-header i {
+            margin-right: 12px;
+            color: #3182ce;
+            background: rgba(77, 171, 247, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+        }
+        
+        /* Form Controls */
+        label {
+            display: block;
+            margin-bottom: 14px;
+            font-weight: 500;
+            color: #2d4a77;
+        }
+        
+        select {
+            width: 100%;
+            max-width: 450px;
+            padding: 14px 15px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e0;
+            background-color: white;
+            margin-bottom: 15px;
+            font-family: inherit;
+            font-size: 14px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+        }
+        
+        select:focus {
+            border-color: #64b3f4;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(100, 179, 244, 0.25), 0 3px 10px rgba(0,0,0,0.04);
+        }
+        
+        select option {
+            padding: 10px;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            background-color: white;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+        }
+        
+        .chart-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        
+        .chart-title {
+            font-weight: 600;
+            font-size: 19px;
+            color: #2d3748;
+            margin-left: 12px;
+        }
+        
+        .chart-icon {
+            color: #3182ce;
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+        }
+        
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #718096;
+            padding-top: 18px;
+            border-top: 1px solid #edf2f7;
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 0;
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, #64b3f4, #c2e9fb);
+        }
+        
+        .footer-brand {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+        
+        .author-credit {
+            font-size: 13px;
+            color: #4a5568;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            margin-top: 6px;
+            padding: 4px 0;
+        }
+        
+        .author-credit i {
+            font-size: 12px;
+            margin-right: 6px;
+            color: #3182ce;
+            background: rgba(100, 179, 244, 0.1);
+            padding: 5px;
+            border-radius: 6px;
+        }
+        
+        /* Custom Chart Styles */
+        .chart-wrapper {
+            position: relative;
+            padding: 15px;
+            border-radius: 10px;
+            background: linear-gradient(to bottom right, #f0f8ff, #e1f5fe);
+            border: 1px solid #e6f0f9;
+        }
+        
+        /* Data info pill */
+        .data-info {
+            display: inline-block;
+            background: #e1f5fe;
+            color: #2c5282;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid #b3e5fc;
+        }
+        
+        .data-info i {
+            margin-right: 5px;
+            color: #3182ce;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            
+            select {
+                max-width: 100%;
+            }
+            
+            .chart-container {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<h2>Top 30 Programming Language Trends (Last 10 Years)</h2>
+<div class="container">
+    <div class="header">
+        <div class="header-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <h2>Top 30 Programming Language Trends (Last 10 Years)</h2>
+    </div>
 
-<label for="languageSelect">Select Language(s):</label><br>
-<select id="languageSelect" multiple size="10" style="width: 300px;"></select>
+    <div class="control-panel">
+        <div class="control-header">
+            <i class="fas fa-filter"></i>
+            <span>Data Selection</span>
+        </div>
+        
+        <label for="languageSelect">Select Language(s):</label>
+        <select id="languageSelect" multiple size="10" style="width: 300px;"></select>
+    </div>
 
-<canvas id="trendChart" height="100"></canvas>  
+    <div class="chart-container">
+        <div class="chart-header">
+            <div class="chart-icon">
+                <i class="fas fa-chart-area"></i>
+            </div>
+            <span class="chart-title">Language Trends Visualization</span>
+        </div>
+        <div class="chart-wrapper">
+            <canvas id="trendChart" height="100"></canvas>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div>
+            <div class="footer-brand">Language Trend Visualizer</div>
+            <div class="author-credit"><i class="fas fa-code"></i> Developed by Rakshita K Biradar</div>
+        </div>
+        <div class="data-info"><i class="fas fa-sync-alt"></i> Data updated periodically</div>
+    </div>
+</div>
 
 <script>
     let chartInstance;
@@ -32,8 +370,8 @@
             select.appendChild(opt);
         });
 
-        // Select first 10 by default
-        for (let i = 0; i < 10; i++) {
+        // Select first 5 by default
+        for (let i = 0; i < 5; i++) {
             if (select.options[i]) select.options[i].selected = true;
         }
 
@@ -80,8 +418,9 @@
 
     function getColor(index) {
         const colors = [
-            'red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'cyan', 'lime', 'navy',
-            'teal', 'gold', 'magenta', 'gray', 'black', 'coral', 'indigo'
+            '#FF6384', '#36A2EB', '#4BC0C0', '#FF9F40', '#9966FF', '#C9CB3B', '#FF6B8A', 
+            '#2FCFBB', '#8AC249', '#5D77FC', '#00B5AD', '#F2C250', '#DB3FB1', '#7F8FA5', 
+            '#3D4EB8', '#28C7B7', '#FFA726', '#7E57C2', '#66BB6A', '#42A5F5'
         ];
         return colors[index % colors.length];
     }
