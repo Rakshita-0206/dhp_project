@@ -18,91 +18,125 @@
             font-family: 'Segoe UI', Roboto, Arial, sans-serif;
             line-height: 1.6;
             color: #2d3748;
-            background: linear-gradient(135deg, #a8c0ff 0%, #c4e0e5 50%, #b0dcf7 100%);
+            background: #f7fafc; /* Light grey background */
             padding: 40px 20px;
             min-height: 100vh;
-            animation: gradientAnimation 15s ease infinite;
-            background-size: 400% 400%;
-        }
-
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: #fff;
             border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 0 30px rgba(10, 37, 64, 0.08) inset;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             padding: 40px;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            backdrop-filter: blur(5px);
-            position: relative;
-            overflow: hidden;
+            border: 1px solid #e2e8f0;
         }
 
         /* Header Styling */
         .header {
             display: flex;
             align-items: center;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #e2e8f0;
-            position: relative;
+            border-bottom: 2px solid #edf2f7;
         }
 
         h2 {
             color: #1a365d;
             font-weight: 700;
-            font-size: 26px;
-            margin-left: 18px;
+            font-size: 28px;
+            margin-left: 20px;
             flex-grow: 1;
         }
 
         .header-icon {
             color: #3182ce;
-            font-size: 22px;
-            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            font-size: 24px;
+            background-color: #e0f7fa;
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 
         /* Control Panel */
         .control-panel {
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(to right, #f8fafc, #e1f5fe);
+            background-color: #fff;
             border-radius: 14px;
-            padding: 28px;
-            margin-bottom: 35px;
+            padding: 30px;
+            margin-bottom: 30px;
             border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.03);
         }
 
-        label {
-            display: block;
-            margin-bottom: 14px;
-            font-weight: 500;
-            color: #2d4a77;
+        .control-panel h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 20px;
         }
 
-        select {
+        .language-select-container {
+            position: relative;
+        }
+
+        .language-select-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             width: 100%;
-            max-width: 450px;
             padding: 14px 15px;
             border-radius: 10px;
             border: 1px solid #cbd5e0;
             background-color: white;
-            margin-bottom: 15px;
             font-family: inherit;
             font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .language-select-button i {
+            color: #718096;
+        }
+
+        .language-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #cbd5e0;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .language-select-dropdown.open {
+            display: block;
+        }
+
+        .language-select-dropdown label {
+            display: block;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #4a5568;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .language-select-dropdown label:hover {
+            background-color: #f7fafc;
+        }
+
+        .language-select-dropdown input[type="checkbox"] {
+            margin-right: 8px;
         }
 
         /* Chart Container */
@@ -122,7 +156,7 @@
 
         .chart-title {
             font-weight: 600;
-            font-size: 19px;
+            font-size: 20px;
             color: #2d3748;
             margin-left: 12px;
         }
@@ -134,7 +168,7 @@
 
         /* Footer */
         .footer {
-            margin-top: 35px;
+            margin-top: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -157,6 +191,43 @@
             display: flex;
             align-items: center;
         }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+            }
+            h2 {
+                font-size: 24px;
+                margin-left: 15px;
+            }
+            .header-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+            .control-panel {
+                padding: 20px;
+            }
+            .control-panel h3 {
+                font-size: 16px;
+            }
+            .language-select-button {
+                font-size: 13px;
+            }
+            .chart-title {
+                font-size: 18px;
+            }
+            .footer {
+                font-size: 12px;
+            }
+            .footer-brand {
+                font-size: 13px;
+            }
+            .author-credit {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -170,10 +241,15 @@
     </div>
 
     <div class="control-panel">
-        <label for="languageSelect">Select Language(s):</label>
-        <select id="languageSelect" multiple size="10" style="width: 300px;">
-            <!-- Dynamically populated options -->
-        </select>
+        <h3>Select Language(s) </h3>
+        <h4> select multiple and compare the trend </h4>
+        <div class="language-select-container">
+            <button id="languageSelectButton" class="language-select-button">
+                Select Languages <i class="fas fa-chevron-down"></i>
+            </button>
+            <div id="languageSelectDropdown" class="language-select-dropdown">
+                </div>
+        </div>
     </div>
 
     <div class="chart-container">
@@ -181,7 +257,7 @@
             <span class="chart-title">Language Trends Visualization</span>
         </div>
         <div class="chart-wrapper">
-            <canvas id="trendChart" height="100"></canvas>
+            <canvas id="trendChart" style="height: 300px;"></canvas>
         </div>
     </div>
 
@@ -193,25 +269,60 @@
 
 <script>
     let chartInstance;
+    const languageSelectButton = document.getElementById('languageSelectButton');
+    const languageSelectDropdown = document.getElementById('languageSelectDropdown');
+    let allLanguages = [];
+    let selectedLanguages = new Set();
 
-    // Fetch language list and populate the select dropdown
+    // Toggle dropdown visibility
+    languageSelectButton.addEventListener('click', () => {
+        languageSelectDropdown.classList.toggle('open');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!languageSelectButton.contains(event.target) && !languageSelectDropdown.contains(event.target)) {
+            languageSelectDropdown.classList.remove('open');
+        }
+    });
+
+    // Fetch language list and populate the dropdown
     async function fetchLanguages() {
-        const res = await fetch('https://dhp-project-nr4z.onrender.com/api/languages');  // Updated API endpoint
-        const languages = await res.json();
-        const select = document.getElementById('languageSelect');
+        const res = await fetch('https://dhp-project-nr4z.onrender.com/api/languages'); // Updated API endpoint
+        allLanguages = await res.json();
 
-        languages.forEach(lang => {
-            const opt = document.createElement('option');
-            opt.value = lang;
-            opt.textContent = lang;
-            select.appendChild(opt);
+        allLanguages.forEach(lang => {
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = lang;
+            checkbox.addEventListener('change', handleLanguageSelection);
+            const span = document.createElement('span');
+            span.textContent = lang;
+            label.appendChild(checkbox);
+            label.appendChild(span);
+            languageSelectDropdown.appendChild(label);
         });
 
         // Select the first 5 languages by default
-        for (let i = 0; i < 5; i++) {
-            if (select.options[i]) select.options[i].selected = true;
-        }
+        const initialLanguages = allLanguages.slice(0, 5);
+        const checkboxes = languageSelectDropdown.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            if (initialLanguages.includes(checkbox.value)) {
+                checkbox.checked = true;
+                selectedLanguages.add(checkbox.value);
+            }
+        });
+        drawChart();
+    }
 
+    function handleLanguageSelection(event) {
+        const lang = event.target.value;
+        if (event.target.checked) {
+            selectedLanguages.add(lang);
+        } else {
+            selectedLanguages.delete(lang);
+        }
         drawChart();
     }
 
@@ -220,16 +331,14 @@
         const response = await fetch('https://dhp-project-nr4z.onrender.com/api/data'); // Updated API endpoint
         const data = await response.json();
 
-        const selectedLangs = Array.from(document.getElementById('languageSelect').selectedOptions)
-                                   .map(opt => opt.value);
-
         const labels = Object.keys(data);
-        const datasets = selectedLangs.map((lang, i) => {
+        const datasets = Array.from(selectedLanguages).map((lang, i) => {
             return {
                 label: lang,
                 data: labels.map(date => data[date][lang] || 0),
                 borderColor: getColor(i),
-                fill: false
+                fill: false,
+                tension: 0.3 // Add some smoothing to the lines
             };
         });
 
@@ -241,13 +350,23 @@
             data: { labels: labels, datasets: datasets },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                aspectRatio: 2, // You can adjust this, but the inline style will override
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    title: { display: true, text: 'Language Trends (Questions per Month)' }
+                    title: { display: true, text: 'Language Trends (Questions per Month)', font: { size: 16 } },
+                    legend: { position: 'bottom', labels: { boxWidth: 15, padding: 10 } }
                 },
                 scales: {
-                    x: { title: { display: true, text: 'Years' }},
-                    y: { title: { display: true, text: 'Percentage of Questions' }}
+                    x: {
+                        title: { display: true, text: 'Years', font: { weight: 'bold' } },
+                        grid: { display: false }
+                    },
+                    y: {
+                        title: { display: true, text: 'Percentage of Questions', font: { weight: 'bold' } },
+                        grid: { borderColor: '#e2e8f0', borderDash: [3, 3] },
+                        beginAtZero: true
+                    }
                 }
             }
         });
@@ -256,14 +375,13 @@
     // Helper function to generate colors for the datasets
     function getColor(index) {
         const colors = [
-            '#FF6384', '#36A2EB', '#4BC0C0', '#FF9F40', '#9966FF', '#C9CB3B', '#FF6B8A', 
-            '#2FCFBB', '#8AC249', '#5D77FC', '#00B5AD', '#F2C250', '#DB3FB1', '#7F8FA5', 
-            '#3D4EB8', '#28C7B7', '#FFA726', '#7E57C2', '#66BB6A', '#42A5F5'
+            '#FF6384', '#36A2EB', '#4BC0C0', '#FF9F40', '#9966FF', '#C9CB3B', '#E91E63',
+            '#00BCD4', '#4CAF50', '#FFC107', '#9C27B0', '#607D8B', '#F44336', '#2196F3',
+            '#8BC34A', '#FF9800', '#673AB7', '#795548', '#03A9F4', '#CDDC39'
         ];
         return colors[index % colors.length];
     }
 
-    document.getElementById('languageSelect').addEventListener('change', drawChart);
     fetchLanguages();
 </script>
 
